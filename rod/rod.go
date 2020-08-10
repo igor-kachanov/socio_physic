@@ -1,11 +1,17 @@
 package rod
 
+//Rod - список фамилий и память (список взаимодействий) этих фамилий
 type Rod struct {
 	MemFamile  []Famile
 	ListFamile []*Famile
 }
 
+//Init - инициализируем Rod
 func (r *Rod) Init(countFamile int, nameProdact string) {
+	/*
+	 countFamile - количество фамилий в Роду
+	 nameProdact - товар, который производит Род (все его фамилии)
+	*/
 	r.MemFamile = make([]Famile, 0, 1)
 	r.ListFamile = make([]*Famile, 0, 1)
 	//var temp Famile
@@ -15,6 +21,8 @@ func (r *Rod) Init(countFamile int, nameProdact string) {
 		r.ListFamile = append(r.ListFamile, temp)
 	}
 }
+
+//WriteMemory - Род помнит все свои состояния
 func (r *Rod) WriteMemory(f Famile) {
 	var temp Famile
 	temp.Init(f.name_prodact)
@@ -22,8 +30,9 @@ func (r *Rod) WriteMemory(f Famile) {
 
 }
 
+//GetDeepCopy Получаем глубокую копию
 func (f Famile) GetDeepCopy() Famile {
-	/* Получаем глубокую копию */
+	/*  */
 	var temp Famile
 	temp.Init(f.name_prodact)
 	temp.id = f.id

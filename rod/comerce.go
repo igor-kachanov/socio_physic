@@ -25,7 +25,7 @@ func (m *Market) Init(countMakers map[string]int) {
 func Sdelka(buyers, sallers *Famile) {
 	nameProdact := sallers.name_prodact
 	var deltaMoney, deltaProdact float64
-	///////////////////////////////////////////////////////////////////////////
+	////////////////// ДЕНЬГИ ///////////////////////////////////////
 	p, ok := sallers.prob_prod_money[nameProdact][buyers.id]
 	if !ok {
 		p = randFl(0.0, 0.05)
@@ -36,7 +36,7 @@ func Sdelka(buyers, sallers *Famile) {
 	buyers.money -= deltaMoney
 	buyers.money_spent[nameProdact][sallers.id] = deltaMoney
 	sallers.money_sold[nameProdact][buyers.id] = deltaMoney
-	/////////////////////////////////////////////////////////////////////////
+	//////////////////////  ТОВАР ///////////////////////////////////
 	t, ok2 := sallers.prob_prod[nameProdact][buyers.id]
 	if !ok2 {
 		t = randFl(0.0, 0.05)
@@ -47,14 +47,14 @@ func Sdelka(buyers, sallers *Famile) {
 	buyers.make_prodact[nameProdact] += deltaProdact
 	buyers.sellers_prod[nameProdact][sallers.id] = deltaProdact
 	sallers.buyers_prod[nameProdact][buyers.id] = deltaProdact
-	///////////////////////////////////////////////////////////////////
+	/////////////////// ///////////////////////////////////
 	price := deltaMoney / deltaProdact
 	buyers.sellers_price[nameProdact][sallers.id] = price
 	sallers.buyers_price[nameProdact][buyers.id] = price
 }
 
 func (m *Market) Torg() {
-	//fmt.Println("Start torg")
+	//Каждый является и покупателем, и продавцом. Каждый взаимодействует с каждым
 	for pr, listBuyers := range m.Fam {
 		for _, nameProdact := range m.Prodacts {
 			//fmt.Println(nameProdact)
@@ -73,6 +73,11 @@ func (m *Market) Torg() {
 }
 
 func (m *Market) Life(countIterations int) {
+	/*
+		Жизнь с точки зрения экономики - это торги, производство,
+		и изменение вероятности передачи денег и русурсов от одного субъекта
+		к другому
+	*/
 	var allMoney float64
 	var tovar float64
 	for i := 0; i < countIterations; i++ {
