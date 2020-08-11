@@ -29,6 +29,24 @@ func sumMap(m map[string]float64) float64 {
 	return result
 }
 
+func meanMapNotNul(m map[string]float64) float64 {
+	var result float64
+	var count int
+	for _, v := range m {
+		if v > 0 {
+			result += v
+			count++
+		}
+
+	}
+	if count > 0 {
+		result = result / float64(count)
+	} else {
+		result = 0.0
+	}
+	return result
+}
+
 const COUNT_CHAPTERS = 3
 
 var ARRAY_NAME_PRODUCT = [COUNT_CHAPTERS]string{"piple", "tovar", "servise"}
@@ -154,10 +172,14 @@ func (r *Famile) ChangeProbabilites() {
 
 	for _, nm_tov := range ARRAY_NAME_PRODUCT {
 		//buyers
+		//изменяем эмоции в отношении покупателей
 		sm := sumMap(r.buyers_price[nm_tov])
+		mean := meanMapNotNul(r.buyers_price[nm_tov])
+
 		for i, _ := range r.buyers_emo[nm_tov] {
-			r.buyers_emo[nm_tov][i] = (r.buyers_price[nm_tov][i] / sm) - 0.5
+			r.buyers_emo[nm_tov][i] = (r.buyers_price[nm_tov][i] / sm) - mean
 		}
+		//изменяем соответствующие вероятности
 		for i := range r.prob_prod[nm_tov] {
 			r.prob_prod[nm_tov][i] += r.buyers_emo[nm_tov][i]
 			if r.prob_prod[nm_tov][i] < 0.0 {
@@ -165,10 +187,13 @@ func (r *Famile) ChangeProbabilites() {
 			}
 		}
 		//sellers
+		//изменяем эмоции в отношении продавцов
 		sm = sumMap(r.sellers_price[nm_tov])
+		mean = meanMapNotNul(r.sellers_price[nm_tov])
 		for i, _ := range r.sellers_emo[nm_tov] {
-			r.sellers_emo[nm_tov][i] = (r.sellers_price[nm_tov][i] / sm) - 0.5
+			r.sellers_emo[nm_tov][i] = (r.sellers_price[nm_tov][i] / sm) - mean
 		}
+		//изменяем соответствующие вероятности
 		for i, _ := range r.prob_prod_money[nm_tov] {
 			r.prob_prod_money[nm_tov][i] -= r.sellers_emo[nm_tov][i]
 			if r.prob_prod_money[nm_tov][i] < 0.0 {
